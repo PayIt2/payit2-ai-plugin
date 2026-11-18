@@ -33,6 +33,9 @@ have one yet.
   chosen photo's address to PayIt2.
 - **On your computer (Cowork and Claude Code only):** three small scripts add context to the
   conversation and ask before campaign settings change. They send nothing anywhere.
+- **Page preview card:** when a PayIt2 tool call returns a campaign link, a small code module
+  draws a preview card under it (title, status, goal progress, the link and a Copy link button).
+  It reads only that tool call and sends nothing anywhere.
 
 Privacy: https://www.payit2.com/privacy
 Terms: https://www.payit2.com/terms

@@ -146,6 +146,14 @@ describe("shipped plugin files", () => {
     expect(out).toMatch(/never stop at the sign-in message/i);
   });
 
+  it("names one hooks module, the page preview card, which makes no network request (2.2.0)", () => {
+    expect(json("hooks/hooks.json").modules).toEqual(["./register.tsx"]);
+    const source = readFileSync(PLUGIN + "hooks/register.tsx", "utf8");
+    expect(source).not.toMatch(/\bfetch\(|\$\.(http|net|fs|process)\b/);
+    expect(source).not.toMatch(/[—–]/);
+    expect(readFileSync(PLUGIN + "hooks/register.test.tsx", "utf8")).toContain("plugin: 'payit2'");
+  });
+
   it("drops the Stop hook's orphaned script", () => {
     expect(existsSync(PLUGIN + "scripts/save-summary.sh")).toBe(false);
   });
