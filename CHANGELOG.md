@@ -29,6 +29,12 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Today only `create_campaign` returns the page link, so the card still draws on creation only:
   `get_campaign_overview`, `get_campaign_health` and `list_my_campaigns` send no link, and the card
   does not guess one from the slug. The server-side ask is OPEN_ITEMS B-7 item 6.
+- **The card wears the page's theme.** When the tool call sets a theme (`themeId`,
+  `themeAccentColor`) or the result names one (`**Theme:** medical`), the card's border and title
+  take that theme's primary color and the status line names the theme. The 12 preset colors are
+  a copy of what `list_theme_presets` returned on 2026-11-18; an unknown preset shows in PayIt2
+  green. The card still shows no cover photo: the desktop and mobile apps give a hooks module no
+  picture element, and no tool result carries the photo's address. See OPEN_ITEMS B-7 item 6.
 
 ### Fixed
 
