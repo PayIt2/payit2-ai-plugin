@@ -90,6 +90,7 @@ _(B-2 closed 2026-06-09 — see COMPLETED_ITEMS.md)_
 3. `get_campaign_health` reports "Healthy, on track" for a draft at $0 with no gifts and no end date. It should say not started or needs a first gift.
 4. No tool deletes a campaign, so test drafts made from chat cannot be cleaned up there. Add `delete_campaign`, limited to drafts with no payments.
 5. The connector's server instructions could say "load the PayIt2 `campaign` skill before calling `create_campaign`", for clients that list plugin skills without their descriptions.
+6. Only `create_campaign` returns the page link, so the page preview card (2.2.0) draws on creation and never on a lookup. `get_campaign_overview` and `get_campaign_health` (seen live 2026-11-18) return the title, status, slug and raised-of-goal, but no link and no campaign type; `list_my_campaigns` rows carry neither. Add a `**URL:** <page url>` line to the overview and health results, in the form `create_campaign` uses, and the link to each `list_my_campaigns` row if that is cheap. The plugin does not build the link from the slug: the result does not say which type the campaign is (an event's overview also says "Fundraising Progress"), and only `collect.payit2.com/fund/<slug>` for fundraisers has been seen live. The card already reads the overview's title and raised line, so it will draw as soon as the link is there.
 **Done when:** each is shipped or declined, and the skills drop any workaround for it.
 
 ---

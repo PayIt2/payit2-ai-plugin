@@ -24,6 +24,18 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Tests sit next to it (`register.test.tsx`, run with `claude plugin test plugin`).
   Not yet seen drawn on a real surface: check the look in the desktop gate before releasing.
   The plugin directory applies its own review to plugins that carry a code module.
+- **The card reads what a campaign lookup returns.** It takes the title from `## Campaign: <title>`
+  and `## Campaign Health: <title>`, and the goal bar from `**Raised:** $1,250 of $15,000 goal`.
+  Today only `create_campaign` returns the page link, so the card still draws on creation only:
+  `get_campaign_overview`, `get_campaign_health` and `list_my_campaigns` send no link, and the card
+  does not guess one from the slug. The server-side ask is OPEN_ITEMS B-7 item 6.
+
+### Fixed
+
+- **A pasted `collect.payit2.com/fund/<slug>` link is recognized.** That is the link
+  `create_campaign` gives a fundraiser, and `detect-campaign-url.sh` matched only
+  `payit2.com/fundraiser|event|group/<slug>`, so the hook never fired on it. The
+  `campaign-context` skill names the short form too.
 
 ## [2.1.2] - 2026-11-11
 

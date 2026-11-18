@@ -3,13 +3,16 @@
 # and slug to the turn. Plain shell only, with no external JSON parser, so it runs on any Mac or Linux machine.
 # Input: the hook's JSON on stdin. Output: context for Claude, or nothing.
 INPUT=$(cat)
-URL=$(printf '%s' "$INPUT" | grep -oiE 'payit2\.com/(fundraiser|event|group)/[A-Za-z0-9_-]+' | head -n 1)
+URL=$(printf '%s' "$INPUT" | grep -oiE 'payit2\.com/(fundraiser|fund|event|group)/[A-Za-z0-9_-]+' | head -n 1)
 [ -z "$URL" ] && exit 0
+HOST=$(printf '%s' "$INPUT" | grep -oiE 'collect\.payit2\.com/fund/' | head -n 1 | grep -oiE '^collect\.')
 TYPE=$(printf '%s' "$URL" | cut -d'/' -f2)
+# create_campaign hands a fundraiser the short form, collect.payit2.com/fund/<slug>.
+[ "$TYPE" = "fund" ] && TYPE=fundraiser
 SLUG=$(printf '%s' "$URL" | cut -d'/' -f3)
 
 cat <<EOF
-[PayIt2 Campaign Detected: https://$URL]
+[PayIt2 Campaign Detected: https://$HOST$URL]
 Type: $TYPE
 Slug: $SLUG
 
