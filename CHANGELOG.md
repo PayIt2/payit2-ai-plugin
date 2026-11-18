@@ -11,6 +11,20 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-18
+
+### Added
+
+- **A page preview card under PayIt2 tool calls that return a campaign link.** A hooks module
+  (`plugin/hooks/register.tsx`, listed under `modules` in `hooks/hooks.json`) draws a bordered card
+  under the tool call's row: the campaign type and status, the title, the blurb, a raised-of-goal
+  bar when a goal is known, the page link and a Copy link button. It uses only what the tool call
+  sent and what PayIt2 answered: no network request, so no cover photo. Calls from other tools,
+  calls still running or failed, and results with no campaign link are left as they were.
+  Tests sit next to it (`register.test.tsx`, run with `claude plugin test plugin`).
+  Not yet seen drawn on a real surface: check the look in the desktop gate before releasing.
+  The plugin directory applies its own review to plugins that carry a code module.
+
 ## [2.1.2] - 2026-11-11
 
 ### Changed

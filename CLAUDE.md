@@ -33,6 +33,11 @@ plugin/
     campaign-context/SKILL.md      # Shared context-gathering engine
   agents/                       # 1 autonomous agent
     campaign-assistant.md             # Deep campaign health analysis and strategy
+  hooks/
+    hooks.json                     # Command hooks, plus "modules" naming the hooks module
+    register.tsx                   # Hooks module: page preview card under PayIt2 tool calls with a campaign link
+    register.test.tsx              # Its tests: claude plugin test plugin
+  scripts/                      # Shell scripts the command hooks run
 ```
 
 Root-level files (`CLAUDE.md`, `README.md`, `LICENSE`, `build-plugin.sh`) are NOT included in the zip.
@@ -52,7 +57,7 @@ This creates `payit2-claude-plugin.zip` in the repo root. To try it in the Claud
 See PLATFORM-STANDARDS.md Section 15 for the full git workflow. Repo-specific additions:
 
 1. Edit files inside `plugin/` (skills, agents, hooks, scripts, manifest) on a `release/YYYY-MM-DD` branch.
-2. Run `cd tests && npm test`, then `./build-plugin.sh` to rebuild the zip.
+2. Run `cd tests && npm test`, then `claude plugin validate plugin` and `claude plugin test plugin` (the hooks module's tests), then `./build-plugin.sh` to rebuild the zip.
 3. Commit both the changed source files and the updated zip, and open a PR.
 4. Before releasing, pass the desktop gate: in the Claude desktop app, upload the PR's zip (remove any older copy first), connect PayIt2 on the plugin's Connectors tab, run `/payit2:check-in` on one of your prod campaigns, then, in a Cowork task, ask for a title change and decline it. The Claude desktop app is the main way organizers install the plugin, so a release waits for this sign-in to work.
 5. To release, land the version bump and a `## [X.Y.Z]` CHANGELOG heading through that PR, then run `./release.sh vX.Y.Z "<title>"` from `main`. It tags `main` and opens draft pin PRs in `payit2-plugins-marketplace` and `payit2-team-plugins`; it never pushes to `main`.
