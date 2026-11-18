@@ -10,6 +10,24 @@ const RAISED = /\$([\d,]+(?:\.\d+)?)\s*\/\s*\$([\d,]+(?:\.\d+)?)/
 // get_campaign_overview and get_campaign_health: "**Raised:** $1,250 of $15,000 goal".
 const RAISED_OF = /\*\*Raised:\*\* \$([\d,]+(?:\.\d+)?) of \$([\d,]+(?:\.\d+)?) goal/
 const GREEN = '#799A3D'
+const THEME = /\*\*Theme:\*\* `?([a-z-]+)/
+const HEX = /^#[0-9A-Fa-f]{6}$/
+// The 12 presets list_theme_presets returned on 2026-11-18: display title and primary color.
+// A copy, so a preset PayIt2 adds or recolors later shows in PayIt2 green until it is added here.
+const THEMES: Record<string, { title: string; color: string }> = {
+  'classic-green': { title: 'Classic Green', color: GREEN },
+  'legal-defense': { title: 'Legal Defense', color: '#1E3A5F' },
+  memorial: { title: 'Memorial', color: '#5C7160' },
+  wedding: { title: 'Wedding', color: '#B89968' },
+  reunion: { title: 'Reunion', color: '#C2853F' },
+  'sports-team': { title: 'Sports Team', color: '#C53030' },
+  birthday: { title: 'Birthday', color: '#D946A0' },
+  'charity-walk': { title: 'Charity Walk', color: '#0D9488' },
+  school: { title: 'School / Class', color: '#1D4ED8' },
+  faith: { title: 'Faith Community', color: '#6B21A8' },
+  medical: { title: 'Medical / Health', color: '#0F766E' },
+  animal: { title: 'Animal / Pet', color: '#B45309' },
+}
 const KINDS: Record<string, string> = {
   fundraiser: 'Fundraiser',
   registration: 'Event',
@@ -77,18 +95,23 @@ export const register: Register = on => {
       (typeof inputGoal === 'number' ? inputGoal : undefined)
     const raised = dollars(raisedOf?.[1]) ?? 0
     const isLive = status !== undefined && status !== 'draft'
+    // The page's theme: the preset the call set or PayIt2 named, and the accent the call set over it.
+    const theme = THEMES[text(field(input, 'themeId')) ?? THEME.exec(result)?.[1] ?? '']
+    const accent = text(field(input, 'themeAccentColor'))
+    const color = accent !== undefined && HEX.test(accent) ? accent : (theme?.color ?? GREEN)
 
     const { Box, Text, Link, Button, Progress } = $.ui.resolve(e)
     const row = await next(e)
 
     return (
-      <Box flexDirection="column" borderStyle="round" borderColor={GREEN} paddingX={1}>
+      <Box flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
         {row}
         <Text dimColor>
           PayIt2 {kind}
           {status !== undefined && (isLive ? ` · ${status}` : ' · draft, not live yet')}
+          {theme !== undefined && ` · ${theme.title} theme`}
         </Text>
-        <Text bold color={GREEN}>
+        <Text bold color={color}>
           {title}
         </Text>
         {blurb !== undefined && <Text>{blurb}</Text>}

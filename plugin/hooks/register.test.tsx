@@ -64,6 +64,32 @@ for (const surface of ['terminal', 'desktop', 'mobile'] as const) {
     await ui.unmount()
   })
 
+  test(`${surface}: the card wears the page's theme, and the accent color a call sets over it`, async $ => {
+    const themed = `${OVERVIEW_WITH_URL}\n**Theme:** medical`
+    const ui = await $.ui.mount(
+      row(surface, 'mcp__PayIt2__get_campaign_overview', themed, { campaignId: 'cmp_123' }),
+    )
+    expect(await ui.find({ text: /Medical \/ Health theme/ })).toBeDefined()
+    expect(JSON.stringify(await ui.drawn())).toContain('#0F766E')
+    await ui.unmount()
+
+    const set = await $.ui.mount(
+      row(surface, 'mcp__PayIt2__update_campaign_settings', OVERVIEW_WITH_URL, {
+        campaignId: 'cmp_123',
+        themeId: 'school',
+        themeAccentColor: '#112233',
+      }),
+    )
+    expect(await set.find({ text: /School \/ Class theme/ })).toBeDefined()
+    expect(JSON.stringify(await set.drawn())).toContain('#112233')
+    await set.unmount()
+
+    const plain = await $.ui.mount(row(surface, 'mcp__PayIt2__create_campaign', OUTPUT))
+    expect(JSON.stringify(await plain.drawn())).toContain('#799A3D')
+    expect(await plain.find({ text: /theme/ })).toBeUndefined()
+    await plain.unmount()
+  })
+
   test(`${surface}: other tools and link-free results are left alone`, async $ => {
     const other = await $.ui.mount(row(surface, 'Bash', OUTPUT))
     expect(await other.find({ type: 'Link' })).toBeUndefined()
