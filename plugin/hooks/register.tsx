@@ -2,11 +2,13 @@ import type { Register } from 'claude-code'
 
 const PAYIT2_TOOL = /payit2/i
 const CAMPAIGN_URL = /https:\/\/(?:collect|www)\.payit2\.com\/[^\s)"'<>\\]+/
-const TITLE = /Campaign (?:Created|Updated): ([^\n\\]+)/
+const TITLE = /## Campaign(?: Created| Updated| Health)?: ([^\n\\]+)/
 const STATUS = /\*\*Status:\*\* ([a-z_]+)/i
 const KIND = /\*\*Type:\*\* ([^\n\\]+)/
 const GOAL = /\*\*Goal:\*\* \$([\d,]+(?:\.\d+)?)/
 const RAISED = /\$([\d,]+(?:\.\d+)?)\s*\/\s*\$([\d,]+(?:\.\d+)?)/
+// get_campaign_overview and get_campaign_health: "**Raised:** $1,250 of $15,000 goal".
+const RAISED_OF = /\*\*Raised:\*\* \$([\d,]+(?:\.\d+)?) of \$([\d,]+(?:\.\d+)?) goal/
 const GREEN = '#799A3D'
 const KINDS: Record<string, string> = {
   fundraiser: 'Fundraiser',
@@ -67,7 +69,7 @@ export const register: Register = on => {
     const status = STATUS.exec(result)?.[1]?.toLowerCase()
     const kind =
       KINDS[String(field(input, 'mode'))] ?? text(KIND.exec(result)?.[1]) ?? 'Campaign'
-    const raisedOf = RAISED.exec(result)
+    const raisedOf = RAISED_OF.exec(result) ?? RAISED.exec(result)
     const inputGoal = field(input, 'goalAmount')
     const goal =
       dollars(raisedOf?.[2]) ??

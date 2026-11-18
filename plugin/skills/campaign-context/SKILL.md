@@ -28,7 +28,7 @@ When a conversation starts and PayIt2 tools are available, the organizer is sign
 
 ## Campaign links
 
-When the organizer pastes a PayIt2 campaign link (`payit2.com/fundraiser/<slug>`, `payit2.com/event/<slug>` or `payit2.com/group/<slug>`, with or without `www.`), the path names the campaign type and the last part is its slug. If PayIt2 tools are available, call `get_campaign_overview` with the slug before you reply, and use what it returns. If they are not, ask for the current numbers the task needs. If the organizer has not said what they want, ask which they need: /check-in for a health score and action plan, /promote for a promotion plan, or /engage for messages to participants.
+When the organizer pastes a PayIt2 campaign link (`payit2.com/fundraiser/<slug>`, `payit2.com/event/<slug>` or `payit2.com/group/<slug>`, with or without `www.`, or a fundraiser's short form `collect.payit2.com/fund/<slug>`), the path names the campaign type and the last part is its slug. If PayIt2 tools are available, call `get_campaign_overview` with the slug before you reply, and use what it returns. If they are not, ask for the current numbers the task needs. If the organizer has not said what they want, ask which they need: /check-in for a health score and action plan, /promote for a promotion plan, or /engage for messages to participants.
 
 **No em dashes in anything you write for the organizer** (stories, posts, emails, thank-yous). Use a comma, colon or period instead. PayIt2's style forbids them.
 

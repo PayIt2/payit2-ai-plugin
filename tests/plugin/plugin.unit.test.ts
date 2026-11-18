@@ -58,6 +58,11 @@ describe("shipped plugin files", () => {
     expect(out).toContain("Slug: sw9gsvg");
     expect(out).toMatch(/get_campaign_overview/);
     expect(detect("Help me plan a 5K")).toBe("");
+    // The link create_campaign hands a fundraiser (seen live 2026-11-18); the hook never fired on it.
+    const fund = detect("How is https://collect.payit2.com/fund/xkg5aqs doing?");
+    expect(fund).toContain("[PayIt2 Campaign Detected: https://collect.payit2.com/fund/xkg5aqs]");
+    expect(fund).toContain("Type: fundraiser");
+    expect(fund).toContain("Slug: xkg5aqs");
   });
 
   it("uses no prompt-type hooks, which Claude Code rejects or cannot ground", () => {
