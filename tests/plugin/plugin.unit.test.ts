@@ -137,6 +137,13 @@ describe("shipped plugin files", () => {
     expect(out).not.toMatch(/[—–]/);
   });
 
+  it("session-start.sh offers an organizer with no campaigns both paths: ask what PayIt2 can do, or /campaign (get-started)", () => {
+    const out = execFileSync(PLUGIN + "scripts/session-start.sh", { input: "{}", encoding: "utf8" });
+    expect(out).toMatch(/If they have no campaigns, greet them and say in one line that they can ask what PayIt2 can do for them/);
+    expect(out).toMatch(/get-started skill/);
+    expect(out).toMatch(/or run \/campaign if they already know what they want to make/);
+  });
+
   it("session-start.sh keeps Claude helping in standalone mode after the one sign-in mention", () => {
     // Without this, a signed-out organizer who asks 'how is my campaign doing?' got only 'sign in and ask again'.
     const out = execFileSync(PLUGIN + "scripts/session-start.sh", { input: "{}", encoding: "utf8" });
@@ -278,7 +285,7 @@ describe("plugin copy", () => {
   });
 
   it("each skill an organizer runs carries the no-em-dash rule, since campaign-context may not load", () => {
-    for (const skill of ["campaign", "check-in", "promote", "engage", "campaign-context"]) {
+    for (const skill of ["get-started", "campaign", "check-in", "promote", "engage", "campaign-context"]) {
       expect(readFileSync(PLUGIN + `skills/${skill}/SKILL.md`, "utf8")).toMatch(/No em dashes in anything you write for the organizer/);
     }
   });
@@ -326,5 +333,148 @@ describe("plugin copy", () => {
   it("no skill tells Claude to stay silent about signing in", () => {
     const hits = allText().filter(({ t }) => /without comment/i.test(t)).map(({ f }) => f.replace(PLUGIN, ""));
     expect(hits).toEqual([]);
+  });
+});
+
+describe("get-started skill", () => {
+  const skill = readFileSync(PLUGIN + "skills/get-started/SKILL.md", "utf8");
+  const ideas = readFileSync(PLUGIN + "skills/get-started/references/ideas.md", "utf8");
+  const description = /^description: (.+)$/m.exec(skill)?.[1] ?? "";
+
+  it("triggers on the newcomer's questions, in Brian's words (2026-11-21)", () => {
+    expect(/^name: (.+)$/m.exec(skill)?.[1]).toBe("get-started");
+    expect(description).toMatch(/^Use whenever/);
+    expect(description).toMatch(/how do I get started\?/i);
+    expect(description).toMatch(/what can I do with this\?/i);
+    expect(description).toMatch(/show me an example/i);
+    expect(description).toMatch(/ideas/i);
+    // The plugin directory caps a skill description at 1,024 characters.
+    expect(description.length).toBeLessThanOrEqual(1024);
+    expect(description).not.toMatch(/[<>]/);
+  });
+
+  it("leaves create requests to the campaign skill, and never claims create_campaign for itself", () => {
+    expect(description).toMatch(/Not for someone who has already decided/);
+    expect(description).toMatch(/goes to the campaign skill/);
+    expect(description).not.toMatch(/create_campaign/);
+    // The campaign skill keeps its own trigger; get-started must not weaken it.
+    const campaign = /^description: (.+)$/m.exec(readFileSync(PLUGIN + "skills/campaign/SKILL.md", "utf8"))?.[1] ?? "";
+    expect(campaign).toMatch(/always before calling create_campaign/);
+    expect(campaign).not.toMatch(/get started|ideas|example/i);
+    expect(skill).toMatch(/stop exploring and hand off to `campaign`/);
+  });
+
+  it("asks one question before the ideas, not an interview", () => {
+    expect(skill).toMatch(/## Step 2: Ask one question/);
+    expect(skill).toMatch(/What do you run or organize\?/);
+    expect(skill).toMatch(/That is the only question before the ideas/);
+    expect(skill).toMatch(/Never re-ask/);
+  });
+
+  it("names only templates PayIt2 returned, since the catalog in the repo can run ahead of production", () => {
+    expect(skill).toMatch(/call `list_templates` once/);
+    expect(skill).toMatch(/Name no template that the tool did not return/);
+    expect(ideas).toMatch(/use a slug only if it came\s+back/);
+  });
+
+  it("makes an example page a private draft with Example in the title, after one yes, and never publishes it", () => {
+    expect(skill).toMatch(/starts with `Example: `/);
+    expect(skill).toMatch(/This is an example page\. Nothing on it is real\./);
+    expect(skill).toMatch(/get a yes before creating it/);
+    expect(skill).toMatch(/Leave `publish` off/);
+    expect(skill).toMatch(/Do not publish one, even if asked/);
+    expect(skill).not.toMatch(/publish: true/);
+    expect(skill).toMatch(/no donations or sign-ups on it yet/);
+  });
+
+  it("never builds an example around a real person's hardship", () => {
+    expect(skill).toMatch(/Do not write an example about a real person's illness, loss or legal trouble/);
+  });
+
+  it("keeps example drafts from piling up, since the connector has no delete tool", () => {
+    expect(skill).toMatch(/Call `list_my_campaigns`/);
+    expect(skill).toMatch(/title starts with "Example:" is already there/);
+    expect(skill).toMatch(/One example page per conversation/);
+    expect(skill).toMatch(/delete it from the campaign's settings/);
+    // No tool by that name exists; the skill must not send Claude looking for one.
+    expect(skill).not.toMatch(/delete_campaign\b/);
+  });
+
+  it("offers make it real, change it or leave it, and make it real builds a fresh page through campaign", () => {
+    expect(skill).toMatch(/\*\*Make it real\.\*\*/);
+    expect(skill).toMatch(/\*\*Change it\.\*\*/);
+    expect(skill).toMatch(/\*\*Leave it\.\*\*/);
+    expect(skill).toMatch(/\*\*Make it real\*\* hands off to the `campaign` skill/);
+    expect(skill).toMatch(/It does not rename the example/);
+    expect(skill).toMatch(/current and new value/);
+  });
+
+  it("still helps when PayIt2 is not connected: describes the page, links to payit2.com, mentions sign-in once", () => {
+    expect(skill).toMatch(/### When PayIt2 tools are not available/);
+    expect(skill).toMatch(/campaign-context\/references\/connect\.md/);
+    expect(skill).toMatch(/the conversation's one sign-in mention/);
+    expect(skill).toMatch(/Do not stop at the sign-in message/);
+    const ctx = readFileSync(PLUGIN + "skills/campaign-context/SKILL.md", "utf8");
+    expect(ctx).toMatch(/asks the `get-started` skill for an example page/);
+    expect(ctx).toMatch(/once per conversation/i);
+  });
+
+  it("says plainly what PayIt2 is not for, and quotes no fees from memory", () => {
+    expect(skill).toMatch(/## Is PayIt2 the right fit\?/);
+    expect(skill).toMatch(/It is not built for/);
+    expect(skill).toMatch(/payit2\.com\/fees/);
+    expect(skill).not.toMatch(/\d(?:\.\d+)?%/);
+  });
+
+  it("hands off to the four working skills by name", () => {
+    for (const name of ["campaign", "check-in", "promote", "engage"]) expect(skill).toContain("| `" + name + "` |");
+    const ctx = readFileSync(PLUGIN + "skills/campaign-context/SKILL.md", "utf8");
+    expect(ctx).toMatch(/Someone new, or not sure what to make, goes to the `get-started` skill/);
+    expect(ctx).toMatch(/they can ask what PayIt2 can do for them/);
+  });
+
+  // Each address answered 200 on 2026-11-21. A new one must be checked by hand and added here.
+  const CHECKED = [
+    "https://www.payit2.com/use-cases/",
+    "https://www.payit2.com/use-cases/schools-clubs/",
+    "https://www.payit2.com/use-cases/leagues-sports/",
+    "https://www.payit2.com/use-cases/religious-groups/",
+    "https://www.payit2.com/use-cases/fundraisers-causes/",
+    "https://www.payit2.com/use-cases/group-payments/",
+    "https://www.payit2.com/use-cases/group-gifts/",
+    "https://www.payit2.com/use-cases/trips-travel/",
+    "https://www.payit2.com/use-cases/medical-funds/",
+    "https://www.payit2.com/use-cases/emergency-relief/",
+    "https://www.payit2.com/use-cases/events-tickets/",
+    "https://www.payit2.com/use-cases/arts-creative/",
+    "https://www.payit2.com/use-cases/community-projects/",
+    "https://www.payit2.com/how-it-works",
+    "https://www.payit2.com/fees",
+    "https://www.payit2.com/support",
+  ];
+
+  it("points only to payit2.com pages that were checked, so it never invents one", () => {
+    const full = [...ideas.matchAll(/https:\/\/www\.payit2\.com[^\s)|]*/g)].map((m) => m[0]);
+    expect(full.length).toBeGreaterThan(10);
+    expect([...new Set(full)].sort()).toEqual([...CHECKED].sort());
+    const bare = [...skill.matchAll(/payit2\.com\/[a-z-]+/g)].map((m) => "https://www." + m[0]);
+    for (const url of bare) expect(CHECKED, url).toContain(url);
+    expect(skill).toMatch(/Use only links from this\s+file|from `references\/ideas\.md`/);
+  });
+
+  it("covers ten kinds of organizer plus a fallback, each with three or more ideas across the page types", () => {
+    const sections = ideas.split(/^## /m).slice(1).filter((s) => !s.startsWith("More payit2.com pages"));
+    expect(sections).toHaveLength(11);
+    for (const s of sections) {
+      const rows = s.split("\n").filter((l) => /^\| .*`[a-z0-9-]+`/.test(l));
+      expect(rows.length, s.split("\n")[0]).toBeGreaterThanOrEqual(3);
+      for (const r of rows) expect(r.split("|")[2].trim(), r).toMatch(/^(Event|Fundraiser|Group payment)$/);
+    }
+    expect(ideas.split(/^## /m).find((s) => s.startsWith("Not sure yet"))).toMatch(/Event[\s\S]*Fundraiser[\s\S]*Group payment/);
+  });
+
+  it("ships in the README's skill list and in the zip's source folder", () => {
+    expect(readFileSync(PLUGIN + "../README.md", "utf8")).toMatch(/\| `\/get-started` \|/);
+    expect(existsSync(PLUGIN + "skills/get-started/references/ideas.md")).toBe(true);
   });
 });
