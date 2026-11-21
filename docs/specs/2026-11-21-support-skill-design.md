@@ -155,7 +155,7 @@ Not testable by a session: a live run in the Claude desktop app with a real sign
 ## 12. What ships where, in what order
 
 **Step one, now. Plugin only (Brian's own repo).**
-PR in `payit2-ai-plugin`: the `support` skill in its hand-off form, a reference of known answers, tests, the rebuilt zip, version 2.3.0. It works on production today and for people who are not signed in.
+PR in `payit2-ai-plugin`: the `support` skill in its hand-off form, a reference of known answers, tests, the rebuilt zip, version 2.4.0. It works on production today and for people who are not signed in.
 
 **Step two, when B-543 is on master. Three PRs, in order.**
 

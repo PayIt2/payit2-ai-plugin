@@ -330,7 +330,7 @@ describe("plugin copy", () => {
     expect(skill).toMatch(/Email me a sign-in link/);
   });
 
-  describe("the support skill (2.3.0)", () => {
+  describe("the support skill (2.4.0)", () => {
     const skill = () => readFileSync(PLUGIN + "skills/support/SKILL.md", "utf8");
     const guide = () => readFileSync(PLUGIN + "skills/support/references/support-request-guide.md", "utf8");
 
