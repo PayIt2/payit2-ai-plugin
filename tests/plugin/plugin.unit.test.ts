@@ -278,7 +278,7 @@ describe("plugin copy", () => {
   });
 
   it("each skill an organizer runs carries the no-em-dash rule, since campaign-context may not load", () => {
-    for (const skill of ["campaign", "check-in", "promote", "engage", "campaign-context"]) {
+    for (const skill of ["campaign", "check-in", "promote", "engage", "support", "campaign-context"]) {
       expect(readFileSync(PLUGIN + `skills/${skill}/SKILL.md`, "utf8")).toMatch(/No em dashes in anything you write for the organizer/);
     }
   });
@@ -321,6 +321,78 @@ describe("plugin copy", () => {
     expect(skill).toMatch(/campaign-context\/references\/connect\.md/);
     expect(skill).toMatch(/Continue with Google/);
     expect(skill).toMatch(/Email me a sign-in link/);
+  });
+
+  describe("the support skill (2.3.0)", () => {
+    const skill = () => readFileSync(PLUGIN + "skills/support/SKILL.md", "utf8");
+    const guide = () => readFileSync(PLUGIN + "skills/support/references/support-request-guide.md", "utf8");
+
+    it("triggers on any problem or request for help, and says the person sends the request", () => {
+      const description = /^description: (.+)$/m.exec(skill())?.[1] ?? "";
+      expect(description).toMatch(/^Use whenever/);
+      expect(description).toMatch(/problem/i);
+      expect(description).toMatch(/refund/i);
+      expect(description).toMatch(/support/i);
+      expect(description).toMatch(/sends it themselves/i);
+      // claude.ai folds a skill description at 1,024 characters.
+      expect(description.length).toBeLessThanOrEqual(1024);
+    });
+
+    it("never sends a request itself, with or without someone watching", () => {
+      expect(skill()).toMatch(/You never send the request/);
+      expect(skill()).toMatch(/Do not fill in or submit that form/);
+      expect(skill()).toMatch(/nobody watching/);
+    });
+
+    it("reads the campaign before answering and never guesses its state", () => {
+      for (const tool of ["get_campaign_overview", "get_campaign_health", "get_payment_summary", "search_participants"]) {
+        expect(skill()).toContain("`" + tool + "`");
+      }
+      expect(skill()).toMatch(/Never guess at a campaign's state/);
+    });
+
+    it("sends refunds, payouts, disputes, fees and account access to support, with no policy from memory", () => {
+      const s = skill();
+      for (const word of [/refunds/, /payouts/, /disputes/i, /fees/, /account access/]) expect(s).toMatch(word);
+      expect(s).toMatch(/do not state a policy, a fee, a time frame or a promise/);
+      expect(s).toMatch(/Do not promise how fast/);
+    });
+
+    it("keeps secrets and other people's details out of a request", () => {
+      for (const t of [skill(), guide()]) {
+        expect(t).toMatch(/card numbers, bank account numbers, passwords, sign-in codes/i);
+      }
+      expect(skill()).toMatch(/Do not paste in the conversation/);
+      expect(skill()).toMatch(/only what the person told you or approved/i);
+    });
+
+    it("hands over the production support form link, carrying only the subject and the campaign link", () => {
+      for (const t of [skill(), guide()]) {
+        expect(t).toContain("https://www.payit2.com/support?subject=");
+        expect(t).toMatch(/&from=/);
+      }
+      expect(skill()).toMatch(/Put nothing else in the link/);
+      // The form's own choices (app-v2 support-form.tsx), so the person finds the one named.
+      for (const label of ["General question", "Something's broken", "Billing or payouts", "Account or login", "Other"]) {
+        expect(skill()).toContain(label);
+        expect(guide()).toContain(label);
+      }
+    });
+
+    it("does not push sign-in, since the support form works for anyone", () => {
+      expect(skill()).toMatch(/Do not bring up signing in here/);
+      expect(skill()).not.toMatch(/connect\.md/);
+    });
+
+    it("names no server tool that does not exist yet (sending from chat waits on app-v2)", () => {
+      for (const t of [skill(), guide()]) expect(t).not.toMatch(/support_request|open_support|list_support|reply_to_support/);
+      expect(skill()).toMatch(/You cannot read their requests or replies from here/);
+    });
+
+    it("is where campaign-context sends problems and requests for help", () => {
+      const ctx = readFileSync(PLUGIN + "skills/campaign-context/SKILL.md", "utf8");
+      expect(ctx).toMatch(/Problems and requests for help go through the `support` skill/);
+    });
   });
 
   it("no skill tells Claude to stay silent about signing in", () => {

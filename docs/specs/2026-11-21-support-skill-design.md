@@ -1,12 +1,12 @@
 ---
 title: "A support skill for the PayIt2 plugin: design"
 type: spec
-doc_status: draft
+doc_status: active
 owner: claude-maintained
 ---
 # A support skill for the PayIt2 plugin: design
 
-**Date:** 2026-11-21. **Author:** Brian, with Claude. **Status:** draft, waiting on Brian's decisions (section 13).
+**Date:** 2026-11-21. **Author:** Brian, with Claude. **Status:** decisions 1 to 4 made by Brian on 2026-11-21 (section 13). Step one is built; step two waits on app-v2.
 
 ## 1. Goal
 
@@ -166,6 +166,8 @@ PR in `payit2-ai-plugin`: the `support` skill in its hand-off form, a reference 
 Step two cannot start until PR #2015 and the B-543 code are merged by Thomas's side. That is outside this work.
 
 ## 13. Decisions for Brian
+
+Brian chose the recommended answer for 1 to 4 on 2026-11-21. Decisions 5 to 8 belong to step two and stay open until it is built; the recommendation stands in until then. Decision 9 is built as recommended, worded "Written with an AI assistant", because the same skills ship to ChatGPT.
 
 1. **Order.** Recommended: step one now, step two when B-543 lands. Other choices: write separate routes on master now (copies B-543, will collide), or wait and ship it all at once.
 2. **Who, in version one.** Recommended: signed-in organizers send from chat (step two); everyone else gets the web form link. No unattended agents, no payer tools.

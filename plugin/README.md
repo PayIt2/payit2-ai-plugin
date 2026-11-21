@@ -9,7 +9,8 @@ owner: claude-maintained
 PayIt2 helps organizers run fundraisers, events and group payments. This plugin brings PayIt2
 into Claude: it builds a campaign page from a few details, checks how a campaign is doing and
 what to do next, writes promotion posts and emails, and drafts thank-yous and updates for
-participants. It works on its own, and it does much more once you connect your PayIt2 account.
+participants. When something goes wrong, it checks your campaign and, if it cannot fix the problem,
+writes a support request for you to send from the PayIt2 support form. It works on its own, and it does much more once you connect your PayIt2 account.
 
 ## Install
 

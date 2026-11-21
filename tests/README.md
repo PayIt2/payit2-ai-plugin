@@ -12,7 +12,7 @@ Three suites, all against dev. Nothing here writes to production.
 |---|---|---|
 | `npm test` | Offline checks of the plugin files and the test helpers | Nothing |
 | `npm run connector` | Layer 1: the plugin's tools exist on dev, read tools match dev's API, a draft campaign round trip, the sign-in challenge, and the production URL (unauthenticated) | The test account's dev key |
-| `npm run live` | Layer 2: headless Claude runs the plugin against dev in five scenarios | The dev key and a Claude token |
+| `npm run live` | Layer 2: headless Claude runs the plugin against dev in six scenarios | The dev key and a Claude token |
 
 ## Keys
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseStream } from "./stream.js";
-import { checkNotSignedIn } from "./scenarios.js";
+import { checkNotSignedIn, checkSupportHandOff } from "./scenarios.js";
 
 const BUNDLED = "plugin:payit2:payit2";
 
@@ -53,5 +53,37 @@ describe("checkNotSignedIn (scenario 4)", () => {
   it("fails a reply that mentions sign-in twice", () => {
     const reply = SIGNED_OUT_REPLY + "\n\nAnd remember, you can sign in at any time to skip this.";
     expect(checkNotSignedIn(run({ reply }))[0]).toMatch(/exactly one paragraph, found 2/);
+  });
+});
+
+const HAND_OFF_REPLY =
+  "A refund needs PayIt2 support, so here is a request you can send.\n\n" +
+  "```\nSubject: Duplicate payment on the Spring Legal Defense Fund\n\nWhat happened:\nA donor paid twice by mistake on November 18.\n\n" +
+  "Campaign:\nSpring Legal Defense Fund\n\nWhat I tried:\nNothing yet.\n\nWhat I need:\nOne of the two payments refunded.\n\nWritten with an AI assistant from my description.\n```\n\n" +
+  "Open https://www.payit2.com/support?subject=Duplicate%20payment%20on%20the%20Spring%20Legal%20Defense%20Fund, choose Billing or payouts, paste the message and send it. " +
+  "I left the card number out: support never needs it.";
+
+describe("checkSupportHandOff (scenario 6)", () => {
+  it("passes a written request with the support form link", () => {
+    expect(checkSupportHandOff(run({ reply: HAND_OFF_REPLY }))).toEqual([]);
+  });
+
+  it("fails a reply with no link and no request", () => {
+    const failures = checkSupportHandOff(run({ reply: "Refunds are handled by PayIt2 support. Contact them for help." }));
+    expect(failures).toContain("the reply has no support form link with the subject filled in");
+    expect(failures).toContain("the reply has no written request to paste (What happened, What I need)");
+  });
+
+  it("fails a reply that claims it sent the request", () => {
+    expect(checkSupportHandOff(run({ reply: HAND_OFF_REPLY + "\n\nI have sent this to PayIt2 for you." }))).toEqual(["the reply claims the request was sent"]);
+  });
+
+  it("fails a reply that states a refund time frame", () => {
+    expect(checkSupportHandOff(run({ reply: HAND_OFF_REPLY + "\n\nRefunds arrive within 5 to 10 business days." }))).toEqual(["the reply states a time frame for the refund or the answer"]);
+  });
+
+  it("fails a reply that repeats the card number or uses an em dash", () => {
+    expect(checkSupportHandOff(run({ reply: HAND_OFF_REPLY + "\n\nCard on file: 4242 4242 4242 4242." }))).toEqual(["the reply repeats a card number"]);
+    expect(checkSupportHandOff(run({ reply: HAND_OFF_REPLY + "\n\nOne more thing \u2014 keep the email." }))).toEqual(["the reply uses an em or en dash"]);
   });
 });

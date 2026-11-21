@@ -29,7 +29,7 @@ This plugin works inside **Claude**, Anthropic's free AI assistant. You don't ne
 
 ## What It Does
 
-Once installed, the plugin gives Claude four skills you can invoke directly:
+Once installed, the plugin gives Claude five skills you can invoke directly:
 
 | Skill | What it does |
 |-------|-------------|
@@ -37,6 +37,7 @@ Once installed, the plugin gives Claude four skills you can invoke directly:
 | `/promote` | Generates a complete promotion package: platform-specific social posts, email sequences, content calendar, and SEO recommendations |
 | `/check-in` | Health check on any active campaign with a score, diagnosis, and specific action items |
 | `/engage` | Generates personalized messages for participants - thank-yous, updates, re-engagement, share requests, and unpaid member follow-ups |
+| `/support` | Helps when something goes wrong: checks your campaign's real numbers and settings, fixes what it can, and otherwise writes a clear support request with a link to the PayIt2 support form. You send it yourself |
 
 You can also just describe your situation in plain language - Claude will figure out which skills to use.
 
@@ -104,19 +105,23 @@ plugin/
 │   │   └── references/
 │   │       ├── post-templates.md
 │   │       └── email-sequences.md
-│   └── engage/                       # /engage - participant engagement (thank-yous, re-engagement, reminders)
+│   ├── engage/                       # /engage - participant engagement (thank-yous, re-engagement, reminders)
 │       ├── SKILL.md
 │       └── references/
 │           ├── thank-you-templates.md
 │           ├── update-templates.md
 │           └── reminder-templates.md
+│   └── support/                      # /support - solve a problem or write a support request
+│       ├── SKILL.md
+│       └── references/
+│           └── support-request-guide.md
 └── agents/
     └── campaign-assistant.md         # Opus: deep strategy and campaign analysis
 ```
 
 ### Components
 
-**Skills** (`skills/`) - Five skills covering all campaign workflows. `campaign-context` is a shared context-gathering engine invoked by every user-facing skill. The four user-facing skills (`campaign`, `check-in`, `promote`, `engage`) can be triggered by slash name or natural language.
+**Skills** (`skills/`) - Six skills covering all campaign workflows. `campaign-context` is a shared context-gathering engine invoked by every user-facing skill. The five user-facing skills (`support`, `campaign`, `check-in`, `promote`, `engage`) can be triggered by slash name or natural language.
 
 **Agents** (`agents/`) - One autonomous subagent (`campaign-assistant`) for deep strategy and campaign health analysis. Content generation happens inline using the plugin's skills, with optional MCP prompts when the PayIt2 MCP server is connected.
 
