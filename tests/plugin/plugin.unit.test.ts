@@ -387,8 +387,9 @@ describe("get-started skill", () => {
     expect(skill).toMatch(/no donations or sign-ups on it yet/);
   });
 
-  it("gives an example page its own made-up options, since some templates carry none (Brian, 2026-11-21)", () => {
-    // A group-trip example made from the template alone showed only an open "choose an amount" box.
+  it("gives an example page its own made-up options, since a page made from chat gets none of the template's (Brian, 2026-11-21)", () => {
+    // create_campaign with templateSlug skips the website's separate clone-template-options step, so a
+    // group-trip example made from the template alone showed only an open "choose an amount" box.
     expect(skill).toMatch(/`options`: always write the example's own options/);
     expect(skill).not.toMatch(/Keep what the template supplies for options/);
     for (const type of ["Group payment", "Event", "Fundraiser"]) expect(skill).toMatch(new RegExp(`\\*\\*${type}:\\*\\*`));
