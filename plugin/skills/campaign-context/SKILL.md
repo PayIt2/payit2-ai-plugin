@@ -16,17 +16,19 @@ This plugin works in two modes. Both are first-class: pick whichever is availabl
 
 **How to detect which mode you're in:** check whether tools like `list_my_campaigns`, `get_campaign_overview`, or `create_campaign` are available in the current session. If they are, you're in connected mode. If not, use standalone mode.
 
+**Someone new, or not sure what to make, goes to the `get-started` skill.** When a person asks how to get started, what they can do with PayIt2, for ideas or for an example, follow `get-started`. It shows what fits them and hands off to `campaign` once they have chosen.
+
 **Creating a campaign always goes through the `campaign` skill.** When the organizer asks to create, start, set up or test a campaign in any words, not only with /campaign, follow the `campaign` skill before calling `create_campaign`. Calling the tool on its own skips the template choice, the theme, the giving levels and the HTML description, and the organizer gets a thinner page.
 
 **Problems and requests for help go through the `support` skill.** When someone says something is broken, asks about a refund, a payout or a fee, cannot sign in, or asks how to reach PayIt2, follow the `support` skill. It reads the campaign's real state first, never states a policy from memory, and hands over a written request for the PayIt2 support form. It never sends anything itself.
 
-**The one sign-in mention.** If the organizer starts creating a campaign with /campaign, or asks about their own live numbers (amount raised, payments, participants, how their campaign is doing), and PayIt2 tools are not available, say once per conversation, in one or two sentences, that signing in to PayIt2 lets you build their page for them or pull those numbers automatically, and give the connection steps for this chat from `references/connect.md`. Someone new to PayIt2 chooses Continue with Google or Email me a sign-in link on the PayIt2 sign-in page; either creates their account in the same step. Then carry on in standalone mode by asking for the numbers. Never mention sign-in at any other time, and never more than once per conversation.
+**The one sign-in mention.** If the organizer starts creating a campaign with /campaign, asks the `get-started` skill for an example page, or asks about their own live numbers (amount raised, payments, participants, how their campaign is doing), and PayIt2 tools are not available, say once per conversation, in one or two sentences, that signing in to PayIt2 lets you build their page for them, set up an example page or pull those numbers automatically, and give the connection steps for this chat from `references/connect.md`. Someone new to PayIt2 chooses Continue with Google or Email me a sign-in link on the PayIt2 sign-in page; either creates their account in the same step. Then carry on in standalone mode by asking for the numbers. Never mention sign-in at any other time, and never more than once per conversation.
 
 **Before changing any campaign setting** (title, description, goal, end date, theme or colors), show the organizer each field's current and new value and wait for a clear yes. PayIt2 enforces this: call `update_campaign_settings` with the fields to change and no `confirm`, and it saves nothing and returns a preview of each field's current and new value. Show that preview, and only after a clear yes call it again with the same fields and `confirm: true`. Some chats also show their own approval prompt on that second call; that is expected. One exception: the theme the /campaign skill applies right after creating a campaign was already shown in the creation summary the organizer said yes to, so call it with only the campaign ID and themeId, and PayIt2 saves it without a preview.
 
 ## Start of a conversation
 
-When a conversation starts and PayIt2 tools are available, the organizer is signed in. Call `list_my_campaigns` once to find their active campaigns, and call `get_campaign_health` for any campaign past half its timeline or below 30% of its goal or capacity. Open your first reply with a short greeting of three to five lines that names any urgent campaign and its top recommendation, then answer what they asked. If they have no campaigns, greet them and suggest /campaign. If PayIt2 tools are not available, do not greet and say nothing about signing in until the one sign-in mention above applies.
+When a conversation starts and PayIt2 tools are available, the organizer is signed in. Call `list_my_campaigns` once to find their active campaigns, and call `get_campaign_health` for any campaign past half its timeline or below 30% of its goal or capacity. Open your first reply with a short greeting of three to five lines that names any urgent campaign and its top recommendation, then answer what they asked. If they have no campaigns, greet them and say in one line that they can ask what PayIt2 can do for them (the get-started skill has ideas and can set up an example page) or run /campaign if they already know what they want to make. If PayIt2 tools are not available, do not greet and say nothing about signing in until the one sign-in mention above applies.
 
 ## Campaign links
 
@@ -72,6 +74,9 @@ If PayIt2 tools are not available, skip this section and use the manual context-
 5. **One question at a time.** Never ask multiple questions in one message. Pick the most important unknown and ask just that. The one exception is the /campaign fast path, which asks for a new campaign's basics in a single message so the organizer gets a page quickly.
 
 ## Context Questions by Command
+
+### /get-started (Ideas and an example page)
+Required: only what the person runs or organizes, asked once. No campaign type, title or numbers: they have not chosen anything yet (see the get-started skill).
 
 ### /campaign (Create & Launch)
 Required: only the basics the campaign skill's fast path lists for the type, asked together in one message. Everything else gets a default, and the deeper story interview waits until the campaign exists (see the campaign skill).

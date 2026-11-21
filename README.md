@@ -29,10 +29,11 @@ This plugin works inside **Claude**, Anthropic's free AI assistant. You don't ne
 
 ## What It Does
 
-Once installed, the plugin gives Claude five skills you can invoke directly:
+Once installed, the plugin gives Claude six skills you can invoke directly:
 
 | Skill | What it does |
 |-------|-------------|
+| `/get-started` | For when you are new or not sure what to make: tell it what you run (a PTA, a team, a church, a group of friends) and it shows three or four ways PayIt2 would help, and can set up a private example page to look at |
 | `/campaign` | Gets your fundraiser, event, or group page up in a few minutes: a few basics in one message, one confirmation, and you have the link. Then it helps you add the story, tickets, photo and launch plan while you use it |
 | `/promote` | Generates a complete promotion package: platform-specific social posts, email sequences, content calendar, and SEO recommendations |
 | `/check-in` | Health check on any active campaign with a score, diagnosis, and specific action items |
@@ -88,6 +89,10 @@ plugin/
 ├── skills/
 │   ├── campaign-context/             # Shared context engine (used by all user-facing skills)
 │   │   └── SKILL.md
+│   ├── get-started/                  # /get-started - ideas for newcomers and a private example page
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── ideas.md
 │   ├── campaign/                     # /campaign - create and launch (full creation workflow)
 │   │   ├── SKILL.md
 │   │   └── references/
@@ -121,7 +126,7 @@ plugin/
 
 ### Components
 
-**Skills** (`skills/`) - Six skills covering all campaign workflows. `campaign-context` is a shared context-gathering engine invoked by every user-facing skill. The five user-facing skills (`support`, `campaign`, `check-in`, `promote`, `engage`) can be triggered by slash name or natural language.
+**Skills** (`skills/`) - Seven skills covering all campaign workflows. `campaign-context` is a shared context-gathering engine invoked by every user-facing skill. The six user-facing skills (`get-started`, `campaign`, `check-in`, `promote`, `engage`, `support`) can be triggered by slash name or natural language.
 
 **Agents** (`agents/`) - One autonomous subagent (`campaign-assistant`) for deep strategy and campaign health analysis. Content generation happens inline using the plugin's skills, with optional MCP prompts when the PayIt2 MCP server is connected.
 

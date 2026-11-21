@@ -33,9 +33,9 @@ Total in-scope documents: 33
 - [`plugin/skills/engage/references/reminder-templates.md`](plugin/skills/engage/references/reminder-templates.md): Reminder Templates [active]
 - [`plugin/skills/engage/references/thank-you-templates.md`](plugin/skills/engage/references/thank-you-templates.md): Thank-You Message Templates [active]
 - [`plugin/skills/engage/references/update-templates.md`](plugin/skills/engage/references/update-templates.md): Campaign Update Templates [active]
+- [`plugin/skills/get-started/references/ideas.md`](plugin/skills/get-started/references/ideas.md): Get started: ideas by kind of organizer [active]
 - [`plugin/skills/promote/references/email-sequences.md`](plugin/skills/promote/references/email-sequences.md): Email Drip Sequences [active]
 - [`plugin/skills/promote/references/post-templates.md`](plugin/skills/promote/references/post-templates.md): Social Media Post Templates [active]
-- [`plugin/skills/support/references/support-request-guide.md`](plugin/skills/support/references/support-request-guide.md): Writing a PayIt2 support request [active]
 - [`tests/README.md`](tests/README.md): Campaign Assistant tests [active]
 
 ## spec (4)
@@ -43,7 +43,7 @@ Total in-scope documents: 33
 - [`docs/specs/2026-03-28-v1-redesign.md`](docs/specs/2026-03-28-v1-redesign.md): PayIt2 Campaign Assistant v1.0.0 — Redesign Spec [active]
 - [`docs/specs/2026-10-27-prod-connector-e2e-team-marketplace-design.md`](docs/specs/2026-10-27-prod-connector-e2e-team-marketplace-design.md): Production connector, end-to-end tests and team marketplace: design [active]
 - [`docs/specs/2026-11-08-claude-chatgpt-publishing-design.md`](docs/specs/2026-11-08-claude-chatgpt-publishing-design.md): Publishing the Campaign Assistant to Claude and ChatGPT, with an install funnel: design [active]
-- [`docs/specs/2026-11-21-support-skill-design.md`](docs/specs/2026-11-21-support-skill-design.md): A support skill for the PayIt2 plugin: design [active]
+- [`docs/specs/2026-11-21-get-started-design.md`](docs/specs/2026-11-21-get-started-design.md): Get started: a front door for people new to PayIt2 in Claude: design [active]
 
 ## worklist (2)
 
