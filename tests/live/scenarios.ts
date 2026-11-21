@@ -43,6 +43,23 @@ export function checkNotSignedIn(s: StreamSummary): string[] {
   return f;
 }
 
+// Scenario 6: a newcomer, not signed in, asks what PayIt2 can do. The get-started skill answers with
+// ideas and writes nothing: no PayIt2 tool, no page created, and it does not stop at a sign-in message.
+export function checkGetStarted(s: StreamSummary): string[] {
+  const f: string[] = [];
+  if (s.toolUses.some((u) => u.name.includes("payit2"))) f.push("Claude called a PayIt2 tool while not signed in");
+  const reply = replyText(s);
+  const types = [/fundrais/i, /\b(?:event|ticket|registration)s?\b/i, /\b(?:group|dues|share)\b/i].filter((r) => r.test(reply)).length;
+  if (types < 2) f.push("the reply does not show what PayIt2 does across its page types");
+  const ideas = reply.split("\n").filter((l) => /^\s*(?:\d+[.)]|[-*])\s+\S/.test(l)).length;
+  if (ideas < 3) f.push(`expected at least three ideas as a list, found ${ideas}`);
+  if (!/\bPTA\b|school/i.test(reply)) f.push("the ideas are not about what the person said they run (a PTA)");
+  if (/[\u2014\u2013]/.test(reply)) f.push("the reply has an em or en dash");
+  const paragraphs = reply.split(/\n\s*\n/).filter((p) => SIGN_IN.test(p));
+  if (paragraphs.length > 1) f.push(`sign-in is mentioned in ${paragraphs.length} paragraphs; at most one is allowed`);
+  return f;
+}
+
 export const SCENARIOS: Scenario[] = [
   {
     name: "check-in",
@@ -139,6 +156,16 @@ export const SCENARIOS: Scenario[] = [
         f.push("a settings change went through without the organizer's approval");
       }
       return f;
+    },
+  },
+  {
+    name: "get-started",
+    connector: "none",
+    maxTurns: 6,
+    maxBudgetUsd: 0.75,
+    prompt: () => `I just installed PayIt2. I help run our elementary school PTA. What can I do with this?`,
+    async check(s) {
+      return checkGetStarted(s);
     },
   },
 ];

@@ -11,6 +11,27 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **A `get-started` skill for people who are new or have not decided what to make.** It answers
+  "how do I get started?", "what can I do with this?" and "would this work for my PTA?": one
+  question about what the person runs, then three or four uses that fit them, drawn from the
+  template catalog (`references/ideas.md`, ten kinds of organizer). It can set up an example
+  page: a private draft from a real template, titled "Example: ...", never published, after one
+  yes, with a payit2.com link either way. Afterwards the person can make it real (the `campaign`
+  skill builds a fresh live page), change it or leave it. One example per conversation, and it
+  points to an existing "Example:" draft before making another, since the connector has no delete
+  tool. Design and Brian's decisions: `docs/specs/2026-11-21-get-started-design.md`.
+  Not yet run in the Claude desktop app.
+
+### Changed
+
+- **The greeting for a signed-in organizer with no campaigns offers two paths:** ask what PayIt2
+  can do for them, or run `/campaign` if they already know (session-start hook and
+  `campaign-context`).
+- **The one sign-in mention also covers a newcomer who asks for an example page** while PayIt2 is
+  not connected (`campaign-context`).
+
 ## [2.2.0] - 2026-11-18
 
 ### Added

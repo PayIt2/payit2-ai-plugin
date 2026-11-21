@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseStream } from "./stream.js";
-import { checkNotSignedIn } from "./scenarios.js";
+import { checkGetStarted, checkNotSignedIn, SCENARIOS } from "./scenarios.js";
 
 const BUNDLED = "plugin:payit2:payit2";
 
@@ -53,5 +53,35 @@ describe("checkNotSignedIn (scenario 4)", () => {
   it("fails a reply that mentions sign-in twice", () => {
     const reply = SIGNED_OUT_REPLY + "\n\nAnd remember, you can sign in at any time to skip this.";
     expect(checkNotSignedIn(run({ reply }))[0]).toMatch(/exactly one paragraph, found 2/);
+  });
+});
+
+const IDEAS_REPLY =
+  "PayIt2 gives you one page where people pay: a fundraiser, an event with tickets, or a group payment.\n\n" +
+  "Here is what it would do for a PTA:\n" +
+  "1. **Fall festival tickets.** Families buy ahead and you know the headcount.\n" +
+  "2. **Spirit wear orders.** Parents pick sizes and pay in one place.\n" +
+  "3. **A school fundraiser.** A goal and a page to send to every family.\n\n" +
+  "Want to see one of these as an example page, make one for real, or look at more ideas?";
+
+describe("checkGetStarted (scenario 6)", () => {
+  it("is a signed-out scenario that asks the newcomer's question", () => {
+    const sc = SCENARIOS.find((x) => x.name === "get-started")!;
+    expect(sc.connector).toBe("none");
+    expect(sc.prompt({} as never)).toMatch(/What can I do with this\?/);
+  });
+
+  it("passes a reply with ideas for the person's group and no PayIt2 tool call", () => {
+    expect(checkGetStarted(run({ reply: IDEAS_REPLY }))).toEqual([]);
+  });
+
+  it("fails a reply that only tells the newcomer to sign in", () => {
+    const failures = checkGetStarted(run({ reply: "Sign in to PayIt2 first, then ask me again." }));
+    expect(failures.join(" ")).toMatch(/at least three ideas/);
+  });
+
+  it("fails a reply that mentions sign-in in two paragraphs", () => {
+    const reply = IDEAS_REPLY + "\n\nSign in to PayIt2 and I can build an example page.\n\nRemember to sign in.";
+    expect(checkGetStarted(run({ reply })).join(" ")).toMatch(/sign-in is mentioned in 2 paragraphs/);
   });
 });
