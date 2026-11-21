@@ -97,7 +97,12 @@ An example page lets the person click through a real PayIt2 page before deciding
 - `templateSlug`: the template for the idea they picked, from the `list_templates` reply.
 - `title`: starts with `Example: `, then a believable name built on what they run, such as "Example: Lincoln PTA Fall Festival". Keep "Example: " at the front. It is the only thing that marks the page as an example.
 - `description` (HTML, as the `campaign` skill's formatting rules describe): the first paragraph is exactly `<p><strong>This is an example page. Nothing on it is real.</strong></p>`, then two or three short paragraphs of made-up but believable detail.
-- The other fields the page type needs (a goal, or an event date a few weeks out with a made-up venue). Keep what the template supplies for options and questions.
+- The other fields the page type needs (a goal, or an event date a few weeks out with a made-up venue). Keep the template's questions.
+- `options`: always write the example's own options, in this same call. Some templates come with none, and then the page shows only an open "choose an amount" box, which tells the person nothing about how their page would work. Passing `options` replaces whatever the template had. Make them up, but price them the way a real organizer would:
+  - **Group payment:** the shares people pay, in one required group, worked out the way `../campaign/references/cost-splitting-guide.md` (campaign/references/cost-splitting-guide.md) does: one per-person share, or two or three tiers when people take part differently. Add an optional "Add-ons" group (`pick_any`, `isRequired: false`) only when the idea has natural extras. For a ski trip: "Your Share" (`pick_one`) with "Full trip, 4 nights" at $650 and "Weekend only, 2 nights" at $350, then "Add-ons" with "Lift tickets, 3 days" at $450 and "Ski or snowboard rental" at $180.
+  - **Event:** ticket tiers in a required "Tickets" group, `pick_any` when people come together (Adult $25, Kid $10), as the `campaign` skill sets event tickets.
+  - **Fundraiser:** three or four amounts in an optional "Giving Levels" group (`pick_one`), or "What your gift covers" (`pick_any`) when each amount pays for a named thing in the made-up cause.
+  - Every option gets a `groupTitle`, and the rules under "Option groups" in `../campaign/references/enrich-guide.md` apply. Use round dollar amounts. Option titles are plain text and name no real business or venue. Do not repeat the prices in the description: the page shows them.
 - Leave `publish` off. An example page is a draft and stays a draft. Do not publish one, even if asked: if they want it live, that is "make it real" below.
 
 For a fundraiser example, invent the cause ("a new playground", "the band's spring trip"). Do not write an example about a real person's illness, loss or legal trouble, even one the person mentioned. A made-up page about a real hardship reads badly if anyone sees it.
@@ -114,7 +119,7 @@ Then offer the three choices in Step 5.
 
 Do all three, in this order, in one reply:
 
-1. **Describe the page in words:** the title it would have, what sits on it, and the ticket, giving or payment options that kind of page usually comes with.
+1. **Describe the page in words:** the title it would have, what sits on it, and the made-up options it would carry, with prices, built the way the `options` rules above describe.
 2. **Give the link** to the matching section on payit2.com from `references/ideas.md`, so they can see real pages of that kind.
 3. **Say once** that connecting PayIt2 lets you build an example page they can click through, and give the connection steps for this chat from `../campaign-context/references/connect.md` (campaign-context/references/connect.md). This is the conversation's one sign-in mention (see `campaign-context`). If it was already used, leave this step out.
 
