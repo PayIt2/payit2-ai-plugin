@@ -11,6 +11,16 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **An example page now carries its own made-up options that fit the idea** (`get-started`). It
+  used to keep whatever the template supplied, and some templates supply none: a ski-trip example
+  from Group Trip / Cost Split showed only an open "choose an amount" box. The skill now writes the
+  options in the same `create_campaign` call: shares (and add-ons when the idea has extras) for a
+  group payment, ticket tiers for an event, and giving levels for a fundraiser. They follow the
+  `campaign` skill's option-group rules. When PayIt2 is not connected, the description of the page
+  names those options and prices too. Brian's call, 2026-11-21.
+
 ## [2.3.0] - 2026-11-21
 
 ### Added
