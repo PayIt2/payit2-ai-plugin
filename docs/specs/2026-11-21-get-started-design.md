@@ -64,6 +64,7 @@ When the person will not say what they run, show one idea per page type from the
 - Made with `create_campaign` from a real template (`templateSlug`), with `publish` left off. It is never published by this skill, under any wording.
 - The title starts with `Example: `. The description opens with one line saying this is an example and nothing on it is real.
 - Content is made up but plausible, built around what the person runs ("Example: Lincoln PTA Fall Festival"). A fundraiser example never names a real person or a real hardship: it uses a made-up cause.
+- The page carries its own made-up options that fit the idea (decision 9): shares for a group payment, ticket tiers for an event, giving levels for a fundraiser, passed in the same `create_campaign` call. A page made from chat does not get the template's options (the website copies them in a separate step that the connector skips), so without its own it shows only an open amount box.
 - The skill asks one yes or no question before creating it, because it writes to their account.
 - The link works for them while they are signed in to PayIt2. Nobody else can open a draft.
 - The page has no donations or sign-ups on it. The skill says so, so the empty page is not a surprise.
@@ -132,6 +133,7 @@ New: greet them, and say in one line that they can ask what PayIt2 can do for th
 | 6 | How many example pages | One per conversation, and reuse an existing "Example:" draft before making another | Decided by default, Brian to confirm |
 | 7 | What the skill says PayIt2 is not for | A store with inventory and shipping, invoices to clients, payroll, and paying one friend back. It says this only when asked about fit. | Decided by default, Brian to confirm |
 | 8 | ChatGPT's onboarding skill | Leave it as `campaign-context` for now | Decided by default, Brian to confirm |
+| 9 | Which options does an example page carry? | Its own made-up options that fit the idea, not the template's | Its own options (2026-11-21, after a ski-trip example from Group Trip / Cost Split showed only "choose an amount") |
 
 ## 11. What is built, and how it is tested
 

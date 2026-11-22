@@ -1,7 +1,7 @@
 {
   "name": "payit2",
   "displayName": "PayIt2",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Run your PayIt2 campaigns with Claude: sell event tickets, take RSVPs, collect group payments and dues, and raise money for a cause. Build a campaign page in minutes, promote it with ready-to-post social posts and emails, see how ticket sales and donations are tracking, and thank or remind the people who signed up.",
   "author": {
     "name": "Brian Anderson, PayIt2 Founder"

@@ -11,6 +11,33 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-22
+
+### Added
+
+- **A support skill (`/support`).** When someone has a problem or asks for help, the plugin reads
+  the campaign's real state with the tools it already has, fixes what it can, and otherwise writes
+  a support request: subject, what happened, the campaign, what was tried and what the person
+  needs. It hands over a link to the PayIt2 support form with the subject and campaign filled in
+  (`https://www.payit2.com/support?subject=...&from=...`). The person pastes the message and sends
+  it. The plugin never sends a request, never states a refund, fee or payout policy from memory,
+  and never puts a card number, bank number, password or sign-in code in a request. It works
+  signed in or not, and for payers as well as organizers.
+- `campaign-context` routes problems and requests for help to the support skill.
+- Design: `docs/specs/2026-11-21-support-skill-design.md`. Sending from chat and reading replies
+  in chat need three server tools that wait on app-v2's B-543 work reaching master.
+
+### Changed
+
+- **An example page now carries its own made-up options that fit the idea** (`get-started`). It
+  used to rely on the template's options, but a page made from chat never gets them: the website
+  copies a template's options in a separate step that the connector skips. A ski-trip example from
+  Group Trip / Cost Split showed only an open "choose an amount" box. The skill now writes the
+  options in the same `create_campaign` call: shares (and add-ons when the idea has extras) for a
+  group payment, ticket tiers for an event, and giving levels for a fundraiser. They follow the
+  `campaign` skill's option-group rules. When PayIt2 is not connected, the description of the page
+  names those options and prices too. Brian's call, 2026-11-21.
+
 ## [2.3.0] - 2026-11-21
 
 ### Added
@@ -25,17 +52,6 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   points to an existing "Example:" draft before making another, since the connector has no delete
   tool. Design and Brian's decisions: `docs/specs/2026-11-21-get-started-design.md`.
   Not yet run in the Claude desktop app.
-- **A support skill (`/support`).** When someone has a problem or asks for help, the plugin reads
-  the campaign's real state with the tools it already has, fixes what it can, and otherwise writes
-  a support request: subject, what happened, the campaign, what was tried and what the person
-  needs. It hands over a link to the PayIt2 support form with the subject and campaign filled in
-  (`https://www.payit2.com/support?subject=...&from=...`). The person pastes the message and sends
-  it. The plugin never sends a request, never states a refund, fee or payout policy from memory,
-  and never puts a card number, bank number, password or sign-in code in a request. It works
-  signed in or not, and for payers as well as organizers.
-- `campaign-context` routes problems and requests for help to the support skill.
-- Design: `docs/specs/2026-11-21-support-skill-design.md`. Sending from chat and reading replies
-  in chat need three server tools that wait on app-v2's B-543 work reaching master.
 
 ### Changed
 

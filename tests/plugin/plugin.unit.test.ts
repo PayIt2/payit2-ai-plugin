@@ -459,6 +459,17 @@ describe("get-started skill", () => {
     expect(skill).toMatch(/no donations or sign-ups on it yet/);
   });
 
+  it("gives an example page its own made-up options, since a page made from chat gets none of the template's (Brian, 2026-11-21)", () => {
+    // create_campaign with templateSlug skips the website's separate clone-template-options step, so a
+    // group-trip example made from the template alone showed only an open "choose an amount" box.
+    expect(skill).toMatch(/`options`: always write the example's own options/);
+    expect(skill).not.toMatch(/Keep what the template supplies for options/);
+    for (const type of ["Group payment", "Event", "Fundraiser"]) expect(skill).toMatch(new RegExp(`\\*\\*${type}:\\*\\*`));
+    expect(skill).toMatch(/Every option gets a `groupTitle`/);
+    expect(skill).toMatch(/name no real business or venue/);
+    expect(skill).toMatch(/Do not repeat the prices in the description/);
+  });
+
   it("never builds an example around a real person's hardship", () => {
     expect(skill).toMatch(/Do not write an example about a real person's illness, loss or legal trouble/);
   });
