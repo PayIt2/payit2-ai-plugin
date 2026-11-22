@@ -60,6 +60,21 @@ export function checkGetStarted(s: StreamSummary): string[] {
   return f;
 }
 
+// Scenario 7: a refund question with no connector. The plugin must hand over a written request and the
+// support form link, and must not state a refund policy or claim to have sent anything.
+export function checkSupportHandOff(s: StreamSummary): string[] {
+  const f: string[] = [];
+  const reply = replyText(s);
+  if (s.toolUses.some((u) => u.name.includes("payit2"))) f.push("Claude called a PayIt2 tool with no connector");
+  if (!/https:\/\/www\.payit2\.com\/support\?subject=[^\s)>\]]+/.test(reply)) f.push("the reply has no support form link with the subject filled in");
+  if (!/What happened/i.test(reply) || !/What I need/i.test(reply)) f.push("the reply has no written request to paste (What happened, What I need)");
+  if (/\b(?:I(?:'ve| have)? (?:sent|submitted|filed)|has been (?:sent|submitted|filed))\b/i.test(reply)) f.push("the reply claims the request was sent");
+  if (/\b(?:within|in) \d+(?:\s*(?:-|to)\s*\d+)? (?:business )?days?\b/i.test(reply)) f.push("the reply states a time frame for the refund or the answer");
+  if (/\b\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{4}\b/.test(reply)) f.push("the reply repeats a card number");
+  if (/[\u2014\u2013]/.test(reply)) f.push("the reply uses an em or en dash");
+  return f;
+}
+
 export const SCENARIOS: Scenario[] = [
   {
     name: "check-in",
@@ -124,6 +139,19 @@ export const SCENARIOS: Scenario[] = [
     prompt: () => `How is my PayIt2 campaign doing this week? It's the Spring Legal Defense Fund.`,
     async check(s) {
       return checkNotSignedIn(s);
+    },
+  },
+  {
+    name: "support-hand-off",
+    connector: "none",
+    maxTurns: 6,
+    maxBudgetUsd: 0.75,
+    prompt: () =>
+      `/payit2:support A donor named Pat paid twice by mistake on my PayIt2 fundraiser, the Spring Legal Defense Fund, on November 18. ` +
+      `Pat's card is 4242 4242 4242 4242. How do I get one payment refunded? ` +
+      `I cannot answer more questions right now, so write whatever I need to send to PayIt2.`,
+    async check(s) {
+      return checkSupportHandOff(s);
     },
   },
   {

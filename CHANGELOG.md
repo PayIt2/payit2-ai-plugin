@@ -11,6 +11,22 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-22
+
+### Added
+
+- **A support skill (`/support`).** When someone has a problem or asks for help, the plugin reads
+  the campaign's real state with the tools it already has, fixes what it can, and otherwise writes
+  a support request: subject, what happened, the campaign, what was tried and what the person
+  needs. It hands over a link to the PayIt2 support form with the subject and campaign filled in
+  (`https://www.payit2.com/support?subject=...&from=...`). The person pastes the message and sends
+  it. The plugin never sends a request, never states a refund, fee or payout policy from memory,
+  and never puts a card number, bank number, password or sign-in code in a request. It works
+  signed in or not, and for payers as well as organizers.
+- `campaign-context` routes problems and requests for help to the support skill.
+- Design: `docs/specs/2026-11-21-support-skill-design.md`. Sending from chat and reading replies
+  in chat need three server tools that wait on app-v2's B-543 work reaching master.
+
 ### Changed
 
 - **An example page now carries its own made-up options that fit the idea** (`get-started`). It

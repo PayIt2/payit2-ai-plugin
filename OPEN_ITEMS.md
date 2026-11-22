@@ -93,6 +93,14 @@ _(B-2 closed 2026-06-09 — see COMPLETED_ITEMS.md)_
 6. Only `create_campaign` returns the page link, so the page preview card (2.2.0) draws on creation and never on a lookup. `get_campaign_overview` and `get_campaign_health` (seen live 2026-11-18) return the title, status, slug and raised-of-goal, but no link and no campaign type; `list_my_campaigns` rows carry neither. Add a `**URL:** <page url>` line to the overview and health results, in the form `create_campaign` uses, and the link to each `list_my_campaigns` row if that is cheap. The plugin does not build the link from the slug: the result does not say which type the campaign is (an event's overview also says "Fundraising Progress"), and only `collect.payit2.com/fund/<slug>` for fundraisers has been seen live. The card already reads the overview's title, raised line and `**Theme:**` line, so it will draw, themed, as soon as the link is there. For the theme to show right after a campaign is made, `create_campaign` and `update_campaign_settings` results need the `**URL:**` and `**Theme:**` lines too: the `campaign` skill sets the theme in a second call, after the card for `create_campaign` has drawn. A cover photo is not possible from the plugin today: the desktop and mobile apps give a hooks module no picture element, and no tool result carries the photo's address.
 **Done when:** each is shipped or declined, and the skills drop any workaround for it.
 
+### B-8. Support from chat, step two: send a request and read replies without leaving the chat
+**Source:** Brian, 2026-11-21. Design: `docs/specs/2026-11-21-support-skill-design.md`.
+**Why:** the support skill (2.4.0) writes the request and hands over the support form link, because app-v2 master has no way for the connector to open, list or answer a request. The routes it needs (`/api/v1/support/threads`) are in B-543 code that is not on master, and its schema PR (app-v2 #2015) is open.
+**Next, in order, once B-543 is on app-v2 master:** (1) an app-v2 database PR that allows the ticket source `assistant`; (2) an app-v2 code PR with three tools (list, open, reply), a preview and a clear yes before every send, tighter hourly caps, and the inbox label; (3) a plugin PR where the skill uses the tools when present, with a hook that asks on the sending call.
+**Tracked in app-v2 as:** B-901 (its worklist PR is the one titled "B-901: worklist item, support requests from Claude or ChatGPT").
+**Decided (Brian 2026-11-21):** signed-in organizers only; source `assistant` with the app's name beside it; preview and yes for every new request and every reply.
+**Done when:** an organizer can send a request and read support's reply in chat on production, and the desktop gate has been walked.
+
 ---
 
 ## Audit log (2026-06-05)

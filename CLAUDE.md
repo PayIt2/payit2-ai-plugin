@@ -25,12 +25,13 @@ All plugin content lives in the `plugin/` folder:
 ```
 plugin/
   .claude-plugin/plugin.json    # Plugin manifest
-  skills/                       # 6 skills (5 user-facing + 1 workflow)
+  skills/                       # 7 skills (6 user-facing + 1 workflow)
     get-started/SKILL.md           # /get-started - ideas for newcomers and a private example page
     campaign/SKILL.md              # /campaign - create and launch (includes creation workflow)
     check-in/SKILL.md              # /check-in - weekly health check (includes analytics)
     promote/SKILL.md               # /promote - promotion strategy (includes multi-channel playbooks)
     engage/SKILL.md                # /engage - participant engagement (thank-yous, re-engagement, reminders, outreach)
+    support/SKILL.md               # /support - solve a problem or write a support request the person sends
     campaign-context/SKILL.md      # Shared context-gathering engine
   agents/                       # 1 autonomous agent
     campaign-assistant.md             # Deep campaign health analysis and strategy

@@ -171,7 +171,7 @@ For questions about cost, give the link payit2.com/fees and do not quote numbers
 | To know how a page they already have is doing | `check-in` |
 | To get the word out | `promote` |
 | To thank, update or remind people | `engage` |
-| Help with a problem (a sign-in, a payment, a payout) | Not this skill. Answer what you can and point them to payit2.com/support |
+| Help with a problem (a sign-in, a payment, a payout) | `support` |
 
 Hand off as soon as they choose. Do not finish the tour first.
 
