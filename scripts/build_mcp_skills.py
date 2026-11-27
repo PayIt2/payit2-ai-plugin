@@ -343,7 +343,8 @@ RULES = [
         "returns. If they are not, ask for the current numbers the task needs. If the organizer has not said what "
         "they want, ask which they need: /check-in for a health score and action plan, /promote for a promotion "
         "plan, or /engage for messages to participants.",
-        "Call `get_campaign_overview` with the slug before you reply, and use what it returns. If the organizer "
+        "Find the campaign the link points to in `list_my_campaigns` (ask which one if you cannot tell), then call "
+        "`get_campaign_overview` with its ID before you reply, and use what it returns. If the organizer "
         "has not said what they want, ask which they need: the `check-in` skill for a health score and action "
         "plan, the `promote` skill for a promotion plan, or the `engage` skill for messages to participants.",
     ),
@@ -373,7 +374,7 @@ RULES = [
         "campaign-context/SKILL.md",
         "Ask only what the current command needs. /promote needs type + title + what's been tried. /engage needs type + what action the user wants to take.",
         "Ask only what the current task needs. A promotion plan needs type + title + what's been tried. Engagement messages need type + what action "
-        "the user wants to take.",
+        "the organizer wants to take.",
     ),
     replace(
         "campaign-context/rule-url",
