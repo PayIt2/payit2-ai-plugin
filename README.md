@@ -119,6 +119,14 @@ plugin/
     └── campaign-assistant.md         # Opus: deep strategy and campaign analysis
 ```
 
+### Skills for the MCP skills extension
+
+`./build-mcp-skills.sh` turns the plugin's skills into server-ready copies for the MCP skills extension (SEP-2640). It writes one generated TypeScript module, `dist/mcp-skills/payit2-skills.ts` (`dist/` is git-ignored), with every file as a list of JSON-quoted lines and a `PIN` that records this repo, the commit from `git rev-parse HEAD`, the plugin version and a `sha256:` digest and byte size for each file. The script refuses to run on a dirty tree unless you pass `--allow-dirty` (the tests do).
+
+It serves five skills under `skill://payit2/<skill>/SKILL.md`: `campaign`, `check-in`, `promote`, `engage` and a trimmed `campaign-context`. `get-started` stays plugin-only. The copies assume the organizer is connected, so the build removes the Claude Code-only parts (`$ARGUMENTS`, `argument-hint`, `allowed-tools`, slash-command and agent references, standalone-mode branches, local file saves) and trims `campaign-context` to its live parts. The rules are in `scripts/build_mcp_skills.py`. Each one is replace-or-fail: if a heading or sentence in `plugin/` changes, the build stops instead of serving a stale or untrimmed copy. A banned-pattern check then fails the build if any Claude Code-only construct is left in the output.
+
+The module is vendored into `payit2-app-v2/mcp-server` as a pinned file. Every change to a served skill changes its digest and makes users approve that skill again, so batch skill changes and vendor a new copy only when the wording is worth the re-approval.
+
 ### Components
 
 **Skills** (`skills/`) - Six skills covering all campaign workflows. `campaign-context` is a shared context-gathering engine invoked by every user-facing skill. The five user-facing skills (`get-started`, `campaign`, `check-in`, `promote`, `engage`) can be triggered by slash name or natural language.

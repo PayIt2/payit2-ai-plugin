@@ -53,6 +53,10 @@ After editing files in `plugin/`, rebuild the zip:
 
 This creates `payit2-claude-plugin.zip` in the repo root. To try it in the Claude desktop app or claude.ai, upload it from Customize > Plugins > Add > Upload plugin.
 
+## Building the MCP Skills Module
+
+`./build-mcp-skills.sh` builds `dist/mcp-skills/payit2-skills.ts`, the server copies of five skills (all but `get-started`) for the MCP skills extension. See README, "Skills for the MCP skills extension". Its rules in `scripts/build_mcp_skills.py` are replace-or-fail on the text in `plugin/skills/`, so a wording change in a served skill can break the build; fix the rule, not the check. The output is vendored into `payit2-app-v2/mcp-server`, and any change to a served skill makes users re-approve it, so batch changes.
+
 ## Git Workflow
 
 See PLATFORM-STANDARDS.md Section 15 for the full git workflow. Repo-specific additions:
